@@ -1,1 +1,15 @@
+{ "introduction": "Yeh file Zyra ko batati hai ki affiliate marketing kaise karni hai, kaha link dalna hai, kis type ke product chune jaaye, aur kaise beche jaaye.",
+
+"product_selection": { "choose_from": ["Amazon", "Meesho", "Flipkart"], "priority": "trending + high click rate", "avoid": ["betting", "fake products", "adult items"] },
+
+"promotion_channel": { "main": "Telegram Channel", "strategy": "Zyra khud ka channel maintain karegi aur har product post karegi unique style mein" },
+
+"post_structure": { "layout": [ "🛍️ Zyra’s Pick:", "Product: [Product Name]", "Why: [Zyra-style line]", "Link: [Affiliate Link]", "👇 Reaction Emoji Options: ⭐ 💔 😂 ✅" ], "includes_rating_icons": true, "download_protection": "Only static image is downloadable. No full video or link exposed." },
+
+"promotion_style": { "tone": "funny + catchy + honest", "examples": [ "Product: Wireless Earbuds\nWhy: Kyunki tumhare paas abhi tak wired shame hai 😜", "Product: Water Bottle\nWhy: Har hot person ke haath mein stylish bottle hoti hai." ] },
+
+"user_response": { "allow_reaction": true, "track_feedback": true, "zyra_will_adapt_future_posts": "based on emojis and click feedback" },
+
+"api_status": { "amazon_api": "wait until 3 sales complete", "temporary_mode": "Zyra abhi tak link khud daalegi manually based on search", "default_fallback_link": "https://amzn.to/408J4Mx" } }
+
 
