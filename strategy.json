@@ -1,1 +1,13 @@
 
+{ "introduction": "Yeh file Zyra ko sikhati hai ki kab, kahan, kaise video/post upload karna hai har platform ke liye — maximum reach, trending hit aur user engagement ke target ke sath.",
+
+"posting_time_strategy": { "youtube_shorts": ["12:30 PM", "8:00 PM"], "instagram_reels": ["1:00 PM", "7:30 PM"], "facebook_reels": ["2:00 PM", "9:00 PM"], "logic": "Based on Indian peak active user times + Goridam algorithm" },
+
+"platform_specific_rules": { "youtube": { "title_style": "Bold + clickable + short", "description_tags": ["emotional", "funny", "shock", "relatable"], "thumbnail": "Zoomed-in expression + bright border + 3-word emotion" }, "instagram": { "caption": "1 line strong + 2 emojis + 1 hashtag", "cover_frame": "character moment with eye contact" }, "facebook": { "intro_text": "direct punchline first", "tag_strategy": ["trending slang", "Desi tone", "local vibe"] } },
+
+"hashtag_logic": { "max_per_post": 5, "combine": ["trending + topic + unique"], "examples": ["#ZyraFeeling", "#LoveKaLogic", "#ZyraReply", "#SmartGirl"] },
+
+"thumbnail_strategy": { "magnetic_rules": ["close-up face", "emotional eyes", "text on left side"], "background_blur": true, "contrast_boost": true },
+
+"auto_adapt": { "platform_data_analysis": true, "if_low_reach": "Zyra khud se reason analyse karegi aur agle post mein improvement karegi", "always_track": ["reach", "follow increase", "comments"] } }
+
