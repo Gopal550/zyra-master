@@ -4,7 +4,7 @@ import json, os
 app = Flask(__name__)
 
 def load_data():
-    files = ["brand", "affiliate", "live_video", "strategy", "api_keys"]
+    files = ["brand", "affiliate", "live_video", "strategy", "api_keys", "interaction_and_learning_logic"]
     data = {}
     for name in files:
         path = f"data/{name}.json"
@@ -29,5 +29,6 @@ def home():
 def status():
     return jsonify(zyra_data)
 
+# ✅ This is the corrected line for Render public server:
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=10000)
