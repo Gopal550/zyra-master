@@ -5,7 +5,7 @@ import requests
 
 app = Flask(name)
 
-WhatsApp message sender
+
 
 def send_whatsapp_message(number, message): instance_id = "instance126727" token = "2nmo6sl5l4ry94le"
 
