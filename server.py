@@ -16,11 +16,10 @@ def send_whatsapp_message(number, message):
 
     res = requests.post(url, data=payload)
     return res.json()
-    
-    if not zyra_data.get("api_keys"):
-        
+
+# ✅ Yeh condition properly indented hai:
+if not zyra_data.get("api_keys"):
     send_whatsapp_message("+918600609295", "Zyra: Mujhe API key chahiye please bhejo 🧠")
-app = Flask(__name__)
 
 def load_data():
     files = ["brand", "affiliate", "live_video", "strategy", "api_keys", "interaction_and_learning_logic"]
