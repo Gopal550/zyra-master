@@ -1,39 +1,61 @@
 from flask import Flask, jsonify
-import json
 import os
+import json
 import requests
 
-app = Flask(name)
+app = Flask(__name__)
 
-
+# WhatsApp message function
 def send_whatsapp_message(number, message):
     instance_id = "instance126727"
-    token = "2nmo6sl514ry94le"
+    token = "2nmo6sl5l4ry94le"
+    
     url = f"https://api.ultramsg.com/{instance_id}/messages/chat"
     payload = {
         "token": token,
         "to": number,
         "body": message
     }
+    
     res = requests.post(url, data=payload)
     return res.json()
 
-
-# Load all JSON data from /data folder
-
-def load_data(): files = ["brand", "affiliate", "live_video", "strategy", "api_keys", "interaction_and_learning_logic"] data = {} for name in files: path = f"data/{name}.json" if os.path.exists(path): with open(path) as f: data[name] = json.load(f) else: data[name] = {} return data
+# Load all data files
+def load_data():
+    files = [
+        "brand", "affiliate", "live_video", "strategy", "api_keys",
+        "interaction_and_learning_logic"
+    ]
+    data = {}
+    for name in files:
+        path = f"data/{name}.json"
+        if os.path.exists(path):
+            with open(path) as f:
+                data[name] = json.load(f)
+        else:
+            data[name] = {}
+    return data
 
 zyra_data = load_data()
 
- WhatsApp message if API keys are missing
+# Check for missing API keys
+if not zyra_data.get("api_keys"):
+    send_whatsapp_message("+918600609295", "Zyra: Mujhe API key chahiye please bhejo.")
 
-if not zyra_data.get("api_keys"): send_whatsapp_message("+918600609295", "Zyra: Mujhe API key chahiye please bhejo ")
+@app.route("/")
+def home():
+    return {
+        "status": "Zyra is live (passive mode)",
+        "note": "Waiting for WhatsApp connection or API key request",
+        "files_loaded": list(zyra_data.keys())
+    }
 
-@app.route("/") def home(): return { "status": "Zyra is live (passive mode)", "note": "Waiting for WhatsApp connection or API key request", "files_loaded": list(zyra_data.keys()) }
+@app.route("/status")
+def status():
+    return jsonify(zyra_data)
 
-@app.route("/status") def status(): return jsonify(zyra_data)
-
-if name == "main": app.run(debug=True)
+if __name__ == "__main__":
+    app.run(debug=True)
 
 
 
