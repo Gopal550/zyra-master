@@ -1,5 +1,6 @@
 from flask import Flask, jsonify
 import json, os
+
 import requests
 
 def send_whatsapp_message(number, message):
@@ -15,6 +16,7 @@ def send_whatsapp_message(number, message):
 
     res = requests.post(url, data=payload)
     return res.json()
+    
     if not zyra_data.get("api_keys"):
     send_whatsapp_message("+918600609295", "Zyra: Mujhe API key chahiye please bhejo 🧠")
 app = Flask(__name__)
