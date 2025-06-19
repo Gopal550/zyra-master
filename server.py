@@ -1,6 +1,22 @@
 from flask import Flask, jsonify
 import json, os
+import requests
 
+def send_whatsapp_message(number, message):
+    instance_id = "instance126727"
+    token = "2nmo6sl5l4ry94le"
+
+    url = f"https://api.ultramsg.com/{instance_id}/messages/chat"
+    payload = {
+        "token": token,
+        "to": number,
+        "body": message
+    }
+
+    res = requests.post(url, data=payload)
+    return res.json()
+    if not zyra_data.get("api_keys"):
+    send_whatsapp_message("+918600609295", "Zyra: Mujhe API key chahiye please bhejo 🧠")
 app = Flask(__name__)
 
 def load_data():
