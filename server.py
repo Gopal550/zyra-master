@@ -6,18 +6,18 @@ import requests
 app = Flask(name)
 
 
+def send_whatsapp_message(number, message):
+    instance_id = "instance126727"
+    token = "2nmo6sl514ry94le"
+    url = f"https://api.ultramsg.com/{instance_id}/messages/chat"
+    payload = {
+        "token": token,
+        "to": number,
+        "body": message
+    }
+    res = requests.post(url, data=payload)
+    return res.json()
 
-def send_whatsapp_message(number, message): instance_id = "instance126727" token = "2nmo6sl5l4ry94le"
-
-url = f"https://api.ultramsg.com/{instance_id}/messages/chat"
-payload = {
-    "token": token,
-    "to": number,
-    "body": message
-}
-
-res = requests.post(url, data=payload)
-return res.json()
 
 Load all JSON data from /data folder
 
