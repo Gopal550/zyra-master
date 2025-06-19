@@ -19,7 +19,7 @@ def send_whatsapp_message(number, message):
     return res.json()
 
 
-Load all JSON data from /data folder
+# Load all JSON data from /data folder
 
 def load_data(): files = ["brand", "affiliate", "live_video", "strategy", "api_keys", "interaction_and_learning_logic"] data = {} for name in files: path = f"data/{name}.json" if os.path.exists(path): with open(path) as f: data[name] = json.load(f) else: data[name] = {} return data
 
