@@ -1,25 +1,38 @@
-from flask import Flask, jsonify
-import json, os
+from flask import Flask, jsonify import json, os, requests
 
-import requests
+app = Flask(name)
 
-def send_whatsapp_message(number, message):
-    instance_id = "instance126727"
-    token = "2nmo6sl5l4ry94le"
+WhatsApp message sender
 
-    url = f"https://api.ultramsg.com/{instance_id}/messages/chat"
-    payload = {
-        "token": token,
-        "to": number,
-        "body": message
-    }
+def send_whatsapp_message(number, message): instance_id = "instance126727" token = "2nmo6sl5l4ry94le"
 
-    res = requests.post(url, data=payload)
-    return res.json()
+url = f"https://api.ultramsg.com/{instance_id}/messages/chat"
+payload = {
+    "token": token,
+    "to": number,
+    "body": message
+}
 
-# ✅ Yeh condition properly indented hai:
-if not zyra_data.get("api_keys"):
-    send_whatsapp_message("+918600609295", "Zyra: Mujhe API key chahiye please bhejo 🧠")
+res = requests.post(url, data=payload)
+return res.json()
+
+Load all JSON data from /data folder
+
+def load_data(): files = ["brand", "affiliate", "live_video", "strategy", "api_keys", "interaction_and_learning_logic"] data = {} for name in files: path = f"data/{name}.json" if os.path.exists(path): with open(path) as f: data[name] = json.load(f) else: data[name] = {} return data
+
+zyra_data = load_data()
+
+✅ WhatsApp message if API keys are missing
+
+if not zyra_data.get("api_keys"): send_whatsapp_message("+918600609295", "Zyra: Mujhe API key chahiye please bhejo 🧠")
+
+@app.route("/") def home(): return { "status": "Zyra is live (passive mode)", "note": "Waiting for WhatsApp connection or API key request", "files_loaded": list(zyra_data.keys()) }
+
+@app.route("/status") def status(): return jsonify(zyra_data)
+
+if name == "main": app.run(debug=True)
+
+
 
 def load_data():
     files = ["brand", "affiliate", "live_video", "strategy", "api_keys", "interaction_and_learning_logic"]
