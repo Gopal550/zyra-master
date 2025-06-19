@@ -22,9 +22,9 @@ def load_data(): files = ["brand", "affiliate", "live_video", "strategy", "api_k
 
 zyra_data = load_data()
 
-✅ WhatsApp message if API keys are missing
+ WhatsApp message if API keys are missing
 
-if not zyra_data.get("api_keys"): send_whatsapp_message("+918600609295", "Zyra: Mujhe API key chahiye please bhejo 🧠")
+if not zyra_data.get("api_keys"): send_whatsapp_message("+918600609295", "Zyra: Mujhe API key chahiye please bhejo ")
 
 @app.route("/") def home(): return { "status": "Zyra is live (passive mode)", "note": "Waiting for WhatsApp connection or API key request", "files_loaded": list(zyra_data.keys()) }
 
@@ -60,6 +60,6 @@ def home():
 def status():
     return jsonify(zyra_data)
 
-# ✅ This is the corrected line for Render public server:
+#  This is the corrected line for Render public server:
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
