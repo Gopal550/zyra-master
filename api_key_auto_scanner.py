@@ -39,4 +39,4 @@ def scan_code_for_keys(root_folder="."):
                         for i, line in enumerate(lines):
                             for keyword in keywords:
                                 if keyword in line:
-                                    match = re.search(rf"{keyword}.*?[=:
+                                    pattern = rf"{keyword}.*?[=:
