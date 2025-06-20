@@ -96,15 +96,6 @@ def check_keys_and_notify():
     with open(sent_flag_file, "w") as f:
         json.dump(sent_flags, f)
 
-# === BACKGROUND CHECKER EVERY 10 MINS ===
-def run_checker():
-    while True:
-        check_keys_and_notify()
-        time.sleep(600)
-
-threading.Thread(target=run_checker, daemon=True).start()
-start_monitoring()
-
 # === LOAD ZYRA DATA ===
 def load_data():
     files = get_active_services()
