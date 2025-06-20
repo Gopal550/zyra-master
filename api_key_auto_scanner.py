@@ -29,6 +29,7 @@ def check_keys_and_notify():
 
                 if not value.get("value") and not sent_flags.get(flag_key):
                     message = f"Zyra: Mujhe {name} {key_type} API key chahiye, please bhejo."
+                    print(f"📲 Sending message for: {name} - {key_type}")
                     send_whatsapp_message(number, message)
                     sent_flags[flag_key] = True
 
