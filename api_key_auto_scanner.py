@@ -20,7 +20,7 @@ def get_expiring_keys(): keys = load_keys() expiring = [] now = datetime.datetim
 
 === Scan Code for API Key Usage ===
 
-def scan_code(folder="."): patterns = ["key", "token", "secret", "client"] found = set() for root, _, files in os.walk(folder): for file in files: if file.endswith(".py"): path = os.path.join(root, file) try: with open(path, "r", encoding="utf-8", errors="ignore") as f: for line in f: for word in line.split(): if any(p in word.lower() for p in patterns): match = re.search(r'(\wkey\w|token|secret|client)[\s:=]+["']?([\w-]{8,})?', line, re.I) if match: found.add(match.group(1)) except: continue return found
+def scan_code(folder="."): patterns = ["key", "token", "secret", "client"] found = set() for root, _, files in os.walk(folder): for file in files: if file.endswith(".py"): path = os.path.join(root, file) try: with open(path, "r", encoding="utf-8", errors="ignore") as f: for line in f: for word in line.split(): if any(p in word.lower() for p in patterns): match = re.search(r'(api_key|access_token|secret|client_id|token)[\s:=]+["\']?([\w\-]{8,})', line, re.I) if match: found.add(match.group(1)) except: continue return found
 
 === Main Scanner Function ===
 
