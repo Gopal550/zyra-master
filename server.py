@@ -147,3 +147,12 @@ def run_checker():
         time.sleep(600)
 
 threading.Thread(target=run_checker, daemon=True).start()
+
+from key_saver import save_key_auto
+
+@app.route("/receive_key", methods=["POST"])
+def receive_key():
+    data = request.json
+    msg = data.get("body", "").strip()
+    save_key_auto(msg)
+    return {"status": "received"}, 200
