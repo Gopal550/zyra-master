@@ -1,4 +1,6 @@
-import os, re, requests
+import os
+import re
+import requests
 
 WHATSAPP_NUMBER = "918600609295"
 INSTANCE_ID = "instance126727"
