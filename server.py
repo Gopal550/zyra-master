@@ -9,6 +9,21 @@ from flask import Flask, jsonify
 
 app = Flask(__name__)
 
+def send_whatsapp_message(number, message):
+    instance_id = "instance126727"
+    token = "2nmo6sl5l4ry94le"
+    url = f"https://api.ultramsg.com/{instance_id}/messages/chat"
+    payload = {
+        "token": token,
+        "to": number,
+        "body": message
+    }
+    try:
+        res = requests.post(url, data=payload)
+        return res.json()
+    except Exception as e:
+        print("Error sending WhatsApp message:", e)
+
 @app.route("/receive_key", methods=["POST"])
 def receive_key():
     data = request.json
@@ -121,3 +136,14 @@ def status():
 # === RUN SERVER FOR RENDER ===
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
+
+import threading
+from api_key_auto_scanner import check_keys_and_notify
+import time
+
+def run_checker():
+    while True:
+        check_keys_and_notify()
+        time.sleep(600)
+
+threading.Thread(target=run_checker, daemon=True).start()
