@@ -1,3 +1,4 @@
+
 from zyra_key_manager import start_monitoring
 import os
 import json
@@ -8,6 +9,7 @@ from flask import Flask, jsonify
 
 app = Flask(__name__)
 
+# === SEND WHATSAPP MESSAGE ===
 def send_whatsapp_message(number, message):
     instance_id = "instance126727"
     token = "2nmo6sl5l4ry94le"
@@ -23,11 +25,22 @@ def send_whatsapp_message(number, message):
     except Exception as e:
         print("Error sending WhatsApp message:", e)
 
+# === SCAN FILES DYNAMICALLY ===
+def get_active_services():
+    files = []
+    for filename in os.listdir("data"):
+        if filename.endswith(".json") and "message_sent" not in filename:
+            name = filename.replace(".json", "")
+            if name.lower() not in ["etc", "test", "dummy"]:
+                files.append(name)
+    return files
+
+# === CHECK MISSING KEYS & ALERT ===
 def check_keys_and_notify():
-    files = ["youtube", "telegram", "facebook", "instagram", "razorpay", "openai", "etc"]
+    files = get_active_services()
     sent_flag_file = "data/message_sent.json"
     number = "+918600609295"
-    
+
     # Load already sent
     if os.path.exists(sent_flag_file):
         with open(sent_flag_file) as f:
@@ -55,18 +68,18 @@ def check_keys_and_notify():
     with open(sent_flag_file, "w") as f:
         json.dump(sent_flags, f)
 
-# Run in background every 10 minutes
+# === BACKGROUND CHECKER EVERY 10 MINS ===
 def run_checker():
     while True:
         check_keys_and_notify()
-        time.sleep(600)  # check every 10 mins
+        time.sleep(600)
 
 threading.Thread(target=run_checker, daemon=True).start()
-
 start_monitoring()
 
+# === LOAD ZYRA DATA ===
 def load_data():
-    files = ["brand", "affiliate", "live_video", "strategy", "api_keys", "interaction_and_learning_logic"]
+    files = get_active_services()
     data = {}
     for name in files:
         path = f"data/{name}.json"
@@ -79,6 +92,7 @@ def load_data():
 
 zyra_data = load_data()
 
+# === ROUTES ===
 @app.route("/")
 def home():
     return {
@@ -91,6 +105,6 @@ def home():
 def status():
     return jsonify(zyra_data)
 
-#  This is the corrected line for Render public server:
+# === RUN SERVER FOR RENDER ===
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
