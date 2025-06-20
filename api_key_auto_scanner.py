@@ -1,65 +1,36 @@
-import os, re, json, requests
-from datetime import datetime, timedelta
 
-WHATSAPP_NUMBER = "918600609295"
-INSTANCE_ID = "instance126727"
-TOKEN = "2nmo6sl5l4ry94le"
-KEY_STORE = "data/api_keys.json"
+def check_keys_and_notify():
+    import re
+    files = os.listdir('data')
+    sent_flag_file = "data/message_sent.json"
+    number = "918600609295"
 
-def send_whatsapp_message(msg):
-    url = f"https://api.ultramsg.com/{INSTANCE_ID}/messages/chat"
-    payload = {"token": TOKEN, "to": WHATSAPP_NUMBER, "body": msg}
-    try: requests.post(url, data=payload)
-    except: pass
+    # Already sent messages
+    if os.path.exists(sent_flag_file):
+        with open(sent_flag_file) as f:
+            sent_flags = json.load(f)
+    else:
+        sent_flags = {}
 
-def load_keys():
-    if not os.path.exists(KEY_STORE): return {}
-    with open(KEY_STORE, "r") as f: return json.load(f)
+    for file in files:
+        if not file.endswith('.json'):
+            continue
 
-def save_key(name, value):
-    keys = load_keys()
-    keys[name] = {"value": value, "date": datetime.now().strftime("%Y-%m-%d")}
-    with open(KEY_STORE, "w") as f: json.dump(keys, f, indent=2)
+        path = os.path.join('data', file)
+        with open(path) as f:
+            data = json.load(f)
 
-def get_expiring_keys():
-    keys = load_keys()
-    expiring = []
-    now = datetime.now()
-    for name, info in keys.items():
-        try:
-            added = datetime.strptime(info.get("date", ""), "%Y-%m-%d")
-            if 5 <= (now - added).days <= 7:
-                expiring.append(name)
-        except: continue
-    return expiring
+        for key, value in data.items():
+            match = re.search(r"(api|access|client|secret|bearer|token)", key.lower())
+            if match:
+                key_type = match.group(1).upper()
+                name = file.replace(".json", "").upper()
+                flag_key = f"{name}_{key_type}"
 
-def scan_code(folder="."):
-    patterns = ["key", "token", "secret", "client"]
-    found = set()
-    for root, _, files in os.walk(folder):
-        for file in files:
-            if file.endswith(".py"):
-                path = os.path.join(root, file)
-                with open(path, "r", encoding="utf-8", errors="ignore") as f:
-                    for line in f:
-                        if any(p in line.lower() for p in patterns):
-                            match = re.search(r'(api_key|access_token|secret|client_id|token)[\s:=]+["\']?([\w\-]{8,})', line, re.I)
-                            if match:
-                                found.add(match.group(1))
-    return found
+                if not value.get("value") and not sent_flags.get(flag_key):
+                    message = f"Zyra: Mujhe {name} {key_type} API key chahiye, please bhejo."
+                    send_whatsapp_message(number, message)
+                    sent_flags[flag_key] = True
 
-def check_and_alert():
-    found_keys = scan_code()
-    saved_keys = load_keys()
-    for key in found_keys:
-        if key not in saved_keys:
-            send_whatsapp_message(f"Zyra: Mujhe {key.upper()} API key chahiye, please bhejo.")
-
-    for key in get_expiring_keys():
-        send_whatsapp_message(f"Zyra: {key.upper()} API key 1-2 din me expire hone wali hai, please update karo.")
-
-def run_api_key_scanner():
-    check_and_alert()
-
-if __name__ == "__main__":
-    run_api_key_scanner()
+    with open(sent_flag_file, "w") as f:
+        json.dump(sent_flags, f)
