@@ -1,3 +1,4 @@
+from zyra_key_manager import start_monitoring
 import os
 import json
 import time
@@ -62,6 +63,7 @@ def run_checker():
 
 threading.Thread(target=run_checker, daemon=True).start()
 
+start_monitoring()
 
 def load_data():
     files = ["brand", "affiliate", "live_video", "strategy", "api_keys", "interaction_and_learning_logic"]
