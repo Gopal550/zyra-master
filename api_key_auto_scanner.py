@@ -25,7 +25,10 @@ def scan_code_for_keys(folder="."):
     try:
      with open(path, "r", encoding="utf-8", errors="ignore") as f:
       lines = f.readlines()
-      for line in lines:
-       for kw in keywords:
-        if kw in line:
-         pattern = r"{}.*?[=:
+      for kw in keywords:
+            if kw in line:
+                pattern = r"{}.*?[=:(\s]+[\"']?([\w\-]+)[\"']?".format(re.escape(kw))
+                match = re.search(pattern, line)
+                if match:
+                    value = match.group(1)
+                    key_usage.setdefault(kw, []).append((file, line.strip()))
