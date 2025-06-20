@@ -40,3 +40,10 @@ def run_api_key_scanner():
         check_keys_and_notify()
     except Exception as e:
         print("Scanner crashed:", e)
+
+def extract_key_type(key_name):
+    key_types = ["api", "access", "client", "secret", "bearer", "token", "key"]
+    for kt in key_types:
+        if kt in key_name.lower():
+            return kt.upper()
+    return "UNKNOWN"
