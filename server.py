@@ -1,9 +1,11 @@
 import os
 import json
-import requests
 import time
 import threading
+import requests
 from flask import Flask, jsonify
+
+app = Flask(__name__)
 
 def send_whatsapp_message(number, message):
     instance_id = "instance126727"
