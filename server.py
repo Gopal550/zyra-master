@@ -1,87 +1,60 @@
-from flask import Flask, request, jsonify
-import os, json, requests
+import time
+import threading
 
-app = Flask(__name__)
-
-# WhatsApp Details
-instance_id = "instance126727"
-token = "2nmo6sl5l4ry94le"
-admin_number = "+918600609295"
-
-# Paths
-api_file = "data/api_keys.json"
-sent_flag_file = "data/message_sent.json"
-
-def load_json(path):
-    if os.path.exists(path):
-        with open(path) as f:
-            return json.load(f)
-    return {}
-
-def save_json(path, data):
-    with open(path, "w") as f:
-        json.dump(data, f, indent=2)
-
-def send_whatsapp(number, message):
+def send_whatsapp_message(number, message):
+    instance_id = "instance126727"
+    token = "2nmo6sl5l4ry94le"
     url = f"https://api.ultramsg.com/{instance_id}/messages/chat"
-    payload = {"token": token, "to": number, "body": message}
+    payload = {
+        "token": token,
+        "to": number,
+        "body": message
+    }
     try:
-        requests.post(url, data=payload)
+        res = requests.post(url, data=payload)
+        return res.json()
     except Exception as e:
-        print("Message send error:", e)
-
-def format_label(key_name):
-    return key_name.upper().replace("_", " ") + " API key"
+        print("Error sending WhatsApp message:", e)
 
 def check_keys_and_notify():
-    api_keys = load_json(api_file)
-    sent_flags = load_json(sent_flag_file)
-    updated = False
+    files = ["youtube", "telegram", "facebook", "instagram", "razorpay", "openai", "etc"]
+    sent_flag_file = "data/message_sent.json"
+    number = "+918600609295"
+    
+    # Load already sent
+    if os.path.exists(sent_flag_file):
+        with open(sent_flag_file) as f:
+            sent_flags = json.load(f)
+    else:
+        sent_flags = {}
 
-    for key in api_keys:
-        value = api_keys.get(key, "")
-        sent = sent_flags.get(key, "")
+    # Check and send missing key alerts
+    for name in files:
+        path = f"data/api_keys.json"
+        key_found = False
+        if os.path.exists(path):
+            with open(path) as f:
+                api_data = json.load(f)
+                key_found = name in api_data and api_data[name]
 
-        if value and sent != "received":
-            send_whatsapp(admin_number, f"{format_label(key)} mil gai hai ✅")
-            sent_flags[key] = "received"
-            updated = True
-        elif not value and sent != "requested":
-            send_whatsapp(admin_number, f"Mujhe {format_label(key)} chahiye, please bhejo.")
-            sent_flags[key] = "requested"
-            updated = True
+        if not key_found and not sent_flags.get(name):
+            send_whatsapp_message(number, f"Zyra: Mujhe {name.upper()} API key chahiye, please bhejo.")
+            sent_flags[name] = True
 
-    if updated:
-        save_json(sent_flag_file, sent_flags)
+        elif key_found and not sent_flags.get(name + "_done"):
+            send_whatsapp_message(number, f"{name.upper()} API key lag gayi hai ✅")
+            sent_flags[name + "_done"] = True
 
-@app.route("/")
-def home():
-    return {"status": "Zyra is active", "message": "API key smart automation running"}
+    with open(sent_flag_file, "w") as f:
+        json.dump(sent_flags, f)
 
-@app.route("/receive_key", methods=["POST"])
-def receive_key():
-    data = request.get_json()
-    key_type = data.get("type")
-    key_value = data.get("value")
+# Run in background every 10 minutes
+def run_checker():
+    while True:
+        check_keys_and_notify()
+        time.sleep(600)  # check every 10 mins
 
-    if not key_type or not key_value:
-        return jsonify({"error": "Missing type or value"}), 400
-
-    api_keys = load_json(api_file)
-    sent_flags = load_json(sent_flag_file)
-
-    api_keys[key_type] = key_value
-    sent_flags[key_type] = "received"
-
-    save_json(api_file, api_keys)
-    save_json(sent_flag_file, sent_flags)
-
-    send_whatsapp(admin_number, f"{format_label(key_type)} lag gai hai ✅")
-    return jsonify({"message": "API key saved successfully"}), 200
-
-if __name__ == "__main__":
-    check_keys_and_notify()
-    app.run()
+threading.Thread(target=run_checker, daemon=True).start()
 
 
 def load_data():
