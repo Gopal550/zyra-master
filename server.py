@@ -10,6 +10,19 @@ from flask import Flask, jsonify
 
 app = Flask(__name__)
 
+@app.route("/receive_key", methods=["POST"])
+def receive_key():
+    data = request.json
+    msg = data.get("body", "").strip()
+    
+    # Expected format: OPENAI: sk-xxxxx or RAZORPAY: rzp_test_abc
+    if ":" in msg:
+        service, key = msg.split(":", 1)
+        save_key(service.strip(), key.strip())
+        return {"status": "Key saved"}, 200
+    else:
+        return {"error": "Invalid format. Use SERVICE: KEY"}, 400
+
 # === SEND WHATSAPP MESSAGE ===
 def send_whatsapp_message(number, message):
     instance_id = "instance126727"
