@@ -5,11 +5,14 @@ import threading
 from datetime import datetime, timedelta
 import requests
 
-Constants
+# Constants
+DATA_FOLDER = "data"
+CHECK_INTERVAL_SECONDS = 24 * 60 * 60  # Every 24 hours
+EXPIRY_ALERT_BEFORE_DAYS = 7
 
-DATA_FOLDER = "data" CHECK_INTERVAL_SECONDS = 24 * 60 * 60  # Every 24 hours EXPIRY_ALERT_BEFORE_DAYS = 7
-
-WHATSAPP_NUMBER = "918600609295" WHATSAPP_INSTANCE_ID = "instance126727" WHATSAPP_TOKEN = "2nmo6sl5l4ry94le"
+WHATSAPP_NUMBER = "918600609295"
+WHATSAPP_INSTANCE_ID = "instance126727"
+WHATSAPP_TOKEN = "2nmo6sl5l4ry94le"
 
 def load_json(path): if os.path.exists(path): with open(path, 'r') as f: return json.load(f) return {}
 
