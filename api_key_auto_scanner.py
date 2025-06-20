@@ -1,6 +1,8 @@
 api_key_auto_scanner.py
 
-import os import re import requests
+import os
+import re
+import requests
 
 === WHATSAPP CONFIG ===
 
