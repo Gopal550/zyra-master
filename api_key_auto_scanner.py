@@ -34,3 +34,9 @@ def check_keys_and_notify():
 
     with open(sent_flag_file, "w") as f:
         json.dump(sent_flags, f)
+
+def run_api_key_scanner():
+    try:
+        check_keys_and_notify()
+    except Exception as e:
+        print("Scanner crashed:", e)
