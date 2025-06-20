@@ -23,7 +23,7 @@ def check_keys_and_notify():
         for key, value in data.items():
             match = re.search(r"(api|access|client|secret|bearer|token)", key.lower())
             if match:
-                key_type = match.group(1).upper()
+                key_type = extract_key_type(key)
                 name = file.replace(".json", "").upper()
                 flag_key = f"{name}_{key_type}"
 
