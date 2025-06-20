@@ -58,5 +58,8 @@ def check_and_alert():
     for key in get_expiring_keys():
         send_whatsapp_message(f"Zyra: {key.upper()} API key 1-2 din me expire hone wali hai, please update karo.")
 
-if __name__ == "__main__":
+def run_api_key_scanner():
     check_and_alert()
+
+if __name__ == "__main__":
+    run_api_key_scanner()
