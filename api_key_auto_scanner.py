@@ -21,6 +21,7 @@ def check_keys_and_notify():
             data = json.load(f)
 
         for key, value in data.items():
+            print(f"🛠 Checking: {file} - {key} = {value}")
             match = re.search(r"(api|access|client|secret|bearer|token)", key.lower())
             if match:
                 key_type = extract_key_type(key)
