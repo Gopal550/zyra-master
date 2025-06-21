@@ -4,7 +4,6 @@ import requests
 
 app = Flask(__name__)
 
-# WhatsApp message bhejne ka function
 def send_whatsapp_message(number, message):
     instance_id = "instance126727"
     token = "2nmo6sl5l4ry94le"
@@ -15,7 +14,6 @@ def send_whatsapp_message(number, message):
     except Exception as e:
         print("WhatsApp send error:", e)
 
-# WhatsApp se API key receive karne wala route
 @app.route("/receive_key", methods=["POST"])
 def receive_key():
     data = request.json
@@ -35,6 +33,5 @@ def receive_key():
         send_whatsapp_message(sender, "❌ Internal server error while saving key.")
         return {"error": "server error"}, 500
 
-# Flask app run
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
