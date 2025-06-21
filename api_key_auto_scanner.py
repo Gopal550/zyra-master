@@ -1,51 +1,58 @@
+import os
+import json
+import time
+import requests
+
+INSTANCE_ID = "instance126727"
+TOKEN = "2nmo6sl5l4ry94le"
+ADMIN_NUMBER = "918600609295"
+SAVE_FOLDER = "API keys Json"
+CHECK_EVERY_SECONDS = 600  # 10 minutes
+
+key_names = ["OPENAI", "RAZORPAY", "STRIPE", "GITHUB", "SENDGRID", "JWT"]
+sent_log_file = "message_sent.json"
+
+def send_whatsapp_message(number, body):
+    url = f"https://api.ultramsg.com/{INSTANCE_ID}/messages/chat"
+    data = {"token": TOKEN, "to": number, "body": body}
+    try:
+        requests.post(url, data=data)
+    except:
+        pass
+
+def load_sent_log():
+    if os.path.exists(sent_log_file):
+        with open(sent_log_file, "r") as f:
+            return json.load(f)
+    return {}
+
+def save_sent_log(log):
+    with open(sent_log_file, "w") as f:
+        json.dump(log, f)
 
 def check_keys_and_notify():
-    import re
-    files = os.listdir('data')
-    sent_flag_file = "data/message_sent.json"
-    number = "918600609295"
+    sent_log = load_sent_log()
 
-    # Already sent messages
-    if os.path.exists(sent_flag_file):
-        with open(sent_flag_file) as f:
-            sent_flags = json.load(f)
-    else:
-        sent_flags = {}
+    for key in key_names:
+        file_path = os.path.join(SAVE_FOLDER, f"{key.lower()}.json")
+        missing = True
 
-    for file in files:
-        if not file.endswith('.json'):
-            continue
+        if os.path.exists(file_path):
+            with open(file_path, "r") as f:
+                try:
+                    data = json.load(f)
+                    if data.get("value"):
+                        missing = False
+                except:
+                    pass
 
-        path = os.path.join('data', file)
-        with open(path) as f:
-            data = json.load(f)
+        if missing and not sent_log.get(key):
+            send_whatsapp_message(ADMIN_NUMBER, f"Zyra: Mujhe {key} API key chahiye, please bhejo.")
+            sent_log[key] = True
 
-        for key, value in data.items():
-            print(f"🛠 Checking: {file} - {key} = {value}")
-            match = re.search(r"(api|access|client|secret|bearer|token)", key.lower())
-            if match:
-                key_type = extract_key_type(key)
-                name = file.replace(".json", "").upper()
-                flag_key = f"{name}_{key_type}"
+    save_sent_log(sent_log)
 
-                if not value.get("value") and not sent_flags.get(flag_key):
-                    message = f"Zyra: Mujhe {name} {key_type} API key chahiye, please bhejo."
-                    print(f"📲 Sending message for: {name} - {key_type}")
-                    send_whatsapp_message(number, message)
-                    sent_flags[flag_key] = True
-
-    with open(sent_flag_file, "w") as f:
-        json.dump(sent_flags, f)
-
-def run_api_key_scanner():
-    try:
+def start_scanner():
+    while True:
         check_keys_and_notify()
-    except Exception as e:
-        print("Scanner crashed:", e)
-
-def extract_key_type(key_name):
-    key_types = ["api", "access", "client", "secret", "bearer", "token", "key"]
-    for kt in key_types:
-        if kt in key_name.lower():
-            return kt.upper()
-    return "UNKNOWN"
+        time.sleep(CHECK_EVERY_SECONDS)
