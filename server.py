@@ -96,7 +96,7 @@ def status():
 @app.route("/receive_key", methods=["POST"])
 def receive_key():
     data = request.json
-    msg = data.get("body", "").strip()
+    msg = data.get("body", "").replace("\n", "").strip()
     save_key_auto(msg)
     return {"status": "received"}, 200
 
