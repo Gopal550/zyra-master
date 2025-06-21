@@ -97,8 +97,15 @@ def status():
 def receive_key():
     data = request.json
     msg = data.get("body", "").replace("\n", "").strip()
-    save_key_auto(msg)
-    return {"status": "received"}, 200
+
+    try:
+        result = save_key_auto(msg)
+        if "error" in result:
+            return {"error": result["error"]}, 400
+        return {"status": "received"}, 200
+    except Exception as e:
+        print("❌ Error in receive_key:", e)
+        return {"error": "Something went wrong while saving key."}, 500
 
 # Start background thread + server
 if __name__ == "__main__":
