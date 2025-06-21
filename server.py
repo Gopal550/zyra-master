@@ -1,4 +1,4 @@
-from api_key_auto_scanner import run_api_key_scanner
+from api_key_auto_scanner import check_keys_and_notify
 from zyra_key_manager import start_monitoring
 import os
 import json
